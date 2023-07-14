@@ -1,6 +1,11 @@
 <template>
     <v-container class="carrito-container">
       <h2 class="carrito-title">Bolsa de Compras</h2>
+      <div class="carrito-pagar">
+        <v-btn color="black" dark @click="pagar">
+          Pagar
+        </v-btn>
+      </div>
       <hr class="carrito-separator">
       <v-row>
         <v-col v-for="producto in carrito" :key="producto.id" cols="12" md="3">
@@ -14,7 +19,9 @@
           </v-card>
         </v-col>
       </v-row>
-      <div>
+      <div class="mt-7">
+        <p>Subtotal: <span class="total-carrito">${{ subtotal.toLocaleString("en-US") }}</span></p>
+        <p>Descuentos: <span class="total-carrito">${{ descuentos.toLocaleString("en-US") }}</span></p>
         <p>Total: <span class="total-carrito">${{ totalCarrito.toLocaleString("en-US") }}</span></p>
       </div>
   
@@ -44,13 +51,23 @@
     },
     computed: {
       carrito() {
-        return this.$store.state.carrito.map(producto => ({
+        return this.$store.state.carrito.map((producto) => ({
           ...producto,
           image: producto.image, // Ruta de la imagen del producto en el archivo JSON
         }));
       },
-      totalCarrito() {
+      subtotal() {
         return this.carrito.reduce((total, producto) => total + producto.price * producto.cantidad, 0);
+      },
+      descuentos() {
+        if (this.subtotal < 500) {
+          return Math.round(this.subtotal * 0.05);
+        } else {
+          return Math.round(this.subtotal * 0.11);
+        }
+      },
+      totalCarrito() {
+        return this.subtotal - this.descuentos;
       },
     },
     methods: {
@@ -61,6 +78,13 @@
       removeFromCart(productId) {
         this.$store.commit('REMOVE_FROM_CART', productId);
         this.dialogVisible = false;
+      },
+      redirectToCarrito() {
+        this.$router.push('/carrito');
+      },
+      pagar() {
+        // Lógica para realizar el pago
+        this.$router.push({ name: 'Carrito' });
       },
     },
   };
@@ -75,6 +99,11 @@
   .carrito-title {
     text-align: center;
     margin-top: 20px;
+  }
+  
+  .carrito-pagar {
+    text-align: center;
+    margin: 10px auto; /* Centra el botón horizontalmente y añade un espacio vertical de 10px */
   }
   
   .carrito-container {

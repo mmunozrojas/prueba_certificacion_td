@@ -17,7 +17,12 @@
                 <div class="electronicaprod__prices">
                   <div class="electronicaprod__promo-price">Promo: ${{ producto.price }}</div>
                 </div>
-                <v-btn color="primary" @click="addToCart(producto)" class="electronicaprod__button">Agregar al Carrito</v-btn>
+                <v-btn color="primary" @click="addToCart(producto)">
+                  Agregar al Carrito
+                  <v-snackbar v-model="snackbarVisible" :timeout="snackbarTimeout" :color="snackbarColor">
+                    {{ snackbarText }}
+                  </v-snackbar>
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -38,6 +43,10 @@ export default {
   },
   data() {
     return {
+      snackbarVisible: false, // Estado para controlar la visibilidad del Snackbar
+      snackbarText: '', // Texto del Snackbar
+      snackbarColor: 'success', // Color del Snackbar
+      snackbarTimeout: 3000, // Duración del Snackbar en milisegundos
       electronica: [],
     };
   },
@@ -48,7 +57,19 @@ export default {
   },
   methods: {
     addToCart(producto) {
-      this.$store.dispatch('addToCart', producto);
+      this.$store.dispatch('addToCart', producto).then(() => {
+        let title = producto.title;
+        if (title.length > 40) {
+          title = title.slice(0, 40) + "...";
+        }
+        const mensaje = `Producto "${title}" agregado al carrito`;
+        this.showSnackbar(mensaje, 'info'); // Mostrar el Snackbar con el mensaje deseado
+      });
+    },
+    showSnackbar(text, color) {
+      this.snackbarText = text;
+      this.snackbarColor = color;
+      this.snackbarVisible = true;
     },
   },
   async created() {
@@ -61,6 +82,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .electronicaprod__container {
@@ -93,7 +115,7 @@ export default {
 }
 
 .electronicaprod__promo-price {
-  color: red;
+  color: rgb(82, 79, 79);
   font-weight: bold;
   margin-bottom: 8px;
 }

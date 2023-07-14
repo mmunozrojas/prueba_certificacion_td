@@ -9,7 +9,10 @@
           <v-col cols="12" sm="6" md="4" class="ropahombre__col" v-for="producto in ropaHombre" :key="producto.id">
             <v-card class="ropahombre__card">
               <v-img :src="producto.image" class="ropahombre__img" contain></v-img>
-              <v-card-title class="ropahombre__title justify-center">{{ producto.title }}</v-card-title>
+              <v-card-title class="ropahombre__title justify-center">
+                <v-icon left>mdi-cart</v-icon>
+                {{ producto.title }}
+              </v-card-title>
               <v-card-subtitle class="ropahombre__subtitle">
                 <div class="ropahombre__description">{{ producto.description }}</div>
               </v-card-subtitle>
@@ -17,7 +20,12 @@
                 <div class="ropahombre__prices">
                   <div class="ropahombre__promo-price">Promo: ${{ producto.price }}</div>
                 </div>
-                <v-btn color="primary" @click="addToCart(producto)" class="ropahombre__button">Agregar al Carrito</v-btn>
+                <v-btn color="primary" @click="addToCart(producto)">
+                  Agregar al Carrito
+                  <v-snackbar v-model="snackbarVisible" :timeout="snackbarTimeout" :color="snackbarColor">
+                    {{ snackbarText }}
+                  </v-snackbar>
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -35,6 +43,14 @@ export default {
   components: {
     'carrito-tabla': CarritoTabla,
   },
+  data() {
+    return {
+      snackbarVisible: false, // Estado para controlar la visibilidad del Snackbar
+      snackbarText: '', // Texto del Snackbar
+      snackbarColor: 'success', // Color del Snackbar
+      snackbarTimeout: 3000, // Duración del Snackbar en milisegundos
+    };
+  },
   computed: {
     ropaHombre() {
       return this.$store.state.ropaHombre;
@@ -45,7 +61,19 @@ export default {
   },
   methods: {
     addToCart(producto) {
-      this.$store.dispatch('addToCart', producto);
+      this.$store.dispatch('addToCart', producto).then(() => {
+        let title = producto.title;
+        if (title.length > 40) {
+          title = title.slice(0, 40) + "...";
+        }
+        const mensaje = `Producto "${title}" agregado al carrito`;
+        this.showSnackbar(mensaje, 'info'); // Mostrar el Snackbar con el mensaje deseado
+      });
+    },
+    showSnackbar(text, color) {
+      this.snackbarText = text;
+      this.snackbarColor = color;
+      this.snackbarVisible = true;
     },
   },
   mounted() {
@@ -53,6 +81,7 @@ export default {
   },
 }
 </script>
+
 
 <style scoped>
 .ropahombre__container {
@@ -85,7 +114,7 @@ export default {
 }
 
 .ropahombre__promo-price {
-  color: red;
+  color: rgb(82, 79, 79);
   font-weight: bold;
   margin-bottom: 8px;
 }

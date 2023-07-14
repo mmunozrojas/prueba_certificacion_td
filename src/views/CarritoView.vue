@@ -9,25 +9,28 @@
           <v-form v-model="valid" ref="form">
             <v-text-field v-model="name" :counter="50" label="Nombre" :rules="nameRules" required></v-text-field>
             <v-text-field v-model="email" label="E-mail" :rules="emailRules" required></v-text-field>
-            <v-text-field v-model="email" label="Repetir E-mail" :rules="emailRules" required></v-text-field>
+            <v-text-field v-model="repeatEmail" label="Repetir E-mail" :rules="repeatEmailRules" required></v-text-field>
             <v-text-field v-model="fono" :counter="10" label="Telefono" :rules="fonoRules" required></v-text-field>
             <v-divider class="my-4"></v-divider>
             <div class="font-weight-bold ml-8 mb-2 text-center text-h5">
-            Datos de Despacho
-          </div>
-            <v-text-field v-model="address" :rules="addressRules" :counter="150" label="Dirección" required></v-text-field>
+              Datos de Despacho
+            </div>
+            <v-text-field v-model="address" :rules="addressRules" :counter="150" label="Dirección"
+              required></v-text-field>
             <v-text-field v-model="comuna" :counter="50" label="Comuna" :rules="comunaRules" required></v-text-field>
             <v-divider class="my-4"></v-divider>
             Formas de Pagos
             <template>
               <v-container class="px-0" fluid>
-                <v-radio-group v-model="radioGroup">
+                <v-radio-group v-model="selectedPaymentMethod" :rules="paymentMethodRules">
                   <v-radio v-for="item in items" :key="item" :label="item" :value="item"></v-radio>
                 </v-radio-group>
-                <v-img src="https://cdn.shopify.com/s/files/1/0013/9935/7503/files/webpay-logo1_faf9fd07-8683-4715-a39b-e990828e3703_large.png?v=1522242608" class="mt-4 payment-image"></v-img>
+                <v-img
+                  src="https://cdn.shopify.com/s/files/1/0013/9935/7503/files/webpay-logo1_faf9fd07-8683-4715-a39b-e990828e3703_large.png?v=1522242608"
+                  class="mt-4 payment-image"></v-img>
               </v-container>
             </template>
-            <v-btn class="mr-4 primary" @click="submit">
+            <v-btn class="mr-4 primary" @click="submit" :disabled="!valid || !selectedPaymentMethod">
               Confirmar
             </v-btn>
             <v-btn @click="clear">
@@ -38,13 +41,8 @@
       </v-col>
       <v-col cols="12" sm="12" lg="6" md="6">
         <v-container class="mt-2">
-          <v-data-table
-            :headers="headers"
-            :items="carrito"
-            :items-per-page="5"
-            class="elevation-1"
-            :no-data-text="'No hay productos en el carrito'"
-          >
+          <v-data-table :headers="headers" :items="carrito" :items-per-page="5" class="elevation-1"
+            :no-data-text="'No hay productos en el carrito'">
             <template v-slot:[`item.precio`]="{ item }">
               ${{ item.price }}
             </template>
@@ -56,8 +54,13 @@
               <v-icon @click="decreaseQuantity(item)">mdi-minus</v-icon>
               <v-icon @click="confirmRemoveFromCart(item)">mdi-delete</v-icon>
             </template>
+            <template v-slot:[`item.image`]="{ item }">
+              <v-img :src="item.image" aspect-ratio="1" contain></v-img>
+            </template>
           </v-data-table>
-          <div>
+          <div class="mt-7">
+            <p>Subtotal: <span class="total-carrito">${{ subtotal.toLocaleString("en-US") }}</span></p>
+            <p>Descuentos: <span class="total-carrito">${{ descuentos.toLocaleString("en-US") }}</span></p>
             <p>Total: <span class="total-carrito">${{ totalCarrito.toLocaleString("en-US") }}</span></p>
           </div>
           <v-dialog v-model="dialogVisible" max-width="500">
@@ -88,23 +91,28 @@ export default {
       valid: false,
       name: '',
       email: '',
+      repeatEmail: '',
       fono: '',
       address: '',
       comuna: '',
-      radioGroup: '',
-      items: ['Tarjeta de crédito', 'Transferencia bancaria','Webpay',
-      'Contra Entrega'],
+      selectedPaymentMethod: '',
+      items: ['Tarjeta de crédito', 'Transferencia bancaria', 'Webpay', 'Contra Entrega'],
       nameRules: [
         (v) => !!v || 'El nombre es requerido',
         (v) => (v && v.length <= 50) || 'El nombre debe tener menos de 50 caracteres',
+        (v) => (/^[A-Za-z\s]+$/).test(v) || 'El nombre sólo puede contener letras',
       ],
       emailRules: [
         (v) => !!v || 'El e-mail es requerido',
         (v) => /.+@.+/.test(v) || 'El e-mail debe ser válido',
       ],
+      repeatEmailRules: [
+        (v) => !!v || 'Debe repetir el e-mail',
+        (v) => v === this.email || 'Los e-mails deben coincidir',
+      ],
       fonoRules: [
         (v) => !!v || 'El teléfono es requerido',
-        (v) => (v && v.length === 10) || 'El teléfono debe tener 10 dígitos',
+        (v) => /^\d+$/.test(v) || 'El teléfono debe contener solo números',
       ],
       addressRules: [
         (v) => !!v || 'La dirección es requerida',
@@ -114,6 +122,9 @@ export default {
         (v) => !!v || 'La comuna es requerida',
         (v) => (v && v.length <= 50) || 'La comuna debe tener menos de 50 caracteres',
       ],
+      paymentMethodRules: [
+        (v) => !!v || 'Debe seleccionar un método de pago',
+      ],
     };
   },
   computed: {
@@ -122,6 +133,7 @@ export default {
     },
     headers() {
       return [
+        { text: 'Imagen', value: 'image' },
         { text: 'Nombre del Producto', value: 'title' },
         { text: 'Precio', value: 'price' },
         { text: 'Cantidad', value: 'cantidad' },
@@ -129,8 +141,19 @@ export default {
         { text: 'Acciones', value: 'actions' },
       ];
     },
-    totalCarrito() {
+
+    subtotal() {
       return this.carrito.reduce((total, producto) => total + producto.price * producto.cantidad, 0);
+    },
+    descuentos() {
+      if (this.subtotal < 500) {
+        return Math.round(this.subtotal * 0.05);
+      } else {
+        return Math.round(this.subtotal * 0.11);
+      }
+    },
+    totalCarrito() {
+      return this.subtotal - this.descuentos;
     },
   },
   methods: {
@@ -162,6 +185,7 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         // Realizar alguna acción con los datos del formulario
+        this.$router.push({ name: 'Confirmacion' });
       }
     },
     clear() {
@@ -178,8 +202,8 @@ export default {
 }
 
 .payment-image {
-  width: 50%; 
-  max-height: 50vh; 
-  margin: auto; 
+  width: 50%;
+  max-height: 50vh;
+  margin: auto;
 }
 </style>

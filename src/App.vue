@@ -4,6 +4,9 @@
     <v-main>
       <router-view></router-view>
     </v-main>
+    <v-snackbar v-model="snackbarVisible" :timeout="snackbarTimeout" :color="snackbarColor">
+      {{ snackbarText }}
+    </v-snackbar>
     <footer-comp></footer-comp>
   </v-app>
 </template>

@@ -20,7 +20,12 @@
                 <div class="ropamujer__prices">
                   <div class="ropamujer__promo-price">Promo: ${{ producto.price }}</div>
                 </div>
-                <v-btn color="primary" @click="addToCart(producto)" class="ropamujer__button">Agregar al Carrito</v-btn>
+                <v-btn color="primary" @click="addToCart(producto)">
+                  Agregar al Carrito
+                  <v-snackbar v-model="snackbarVisible" :timeout="snackbarTimeout" :color="snackbarColor">
+                    {{ snackbarText }}
+                  </v-snackbar>
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -38,6 +43,14 @@ export default {
   components: {
     'carrito-tabla': CarritoTabla,
   },
+  data() {
+    return {
+      snackbarVisible: false, // Estado para controlar la visibilidad del Snackbar
+      snackbarText: '', // Texto del Snackbar
+      snackbarColor: 'sucess', // Color del Snackbar
+      snackbarTimeout: 3000, // Duración del Snackbar en milisegundos
+    };
+  },
   computed: {
     ropaMujer() {
       return this.$store.state.ropaMujer;
@@ -48,7 +61,19 @@ export default {
   },
   methods: {
     addToCart(producto) {
-      this.$store.dispatch('addToCart', producto);
+      this.$store.dispatch('addToCart', producto).then(() => {
+        let title = producto.title;
+        if (title.length > 40) {
+          title = title.slice(0, 40) + "...";
+        }
+        const mensaje = `Producto "${title}" agregado al carrito`;
+        this.showSnackbar(mensaje, 'info'); // Mostrar el Snackbar con el mensaje deseado
+      });
+    },
+    showSnackbar(text, color) {
+      this.snackbarText = text;
+      this.snackbarColor = color;
+      this.snackbarVisible = true;
     },
   },
   mounted() {
@@ -56,6 +81,7 @@ export default {
   },
 }
 </script>
+
 
 <style scoped>
 .ropamujer__container {
@@ -82,7 +108,7 @@ export default {
 }
 
 .ropamujer__promo-price {
-  color: red;
+  color: rgb(82, 79, 79);
   font-weight: bold;
   margin-bottom: 8px;
 }
@@ -105,4 +131,8 @@ export default {
   max-height: 7em;
   overflow: auto;
 }
+
+.v-snack__wrapper {
+        max-width: none;
+    }
 </style>
