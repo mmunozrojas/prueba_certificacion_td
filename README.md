@@ -1,4 +1,4 @@
-# experimento_tienda
+# Prueba Talento Digital
 
 ## Project setup
 ```
