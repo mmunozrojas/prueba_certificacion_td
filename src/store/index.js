@@ -33,6 +33,9 @@ export default new Vuex.Store({
     SET_MEJORES_PRODUCTOS(state, productos) {
       state.home.mejoresproductos = productos;
     },
+    SET_TIPOS_PRODUCTOS(state, productos) {
+      state.home.tiposproductos = productos;
+    },
     ADD_TO_CART(state, producto) {
       let existeProducto = state.carrito.find(item => item.id === producto.id);
       if (existeProducto) {
@@ -74,6 +77,15 @@ export default new Vuex.Store({
       axios.get('/home.json')
         .then(response => {
           commit('SET_MEJORES_PRODUCTOS', response.data.mejoresproductos);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    fetchTiposProductos({ commit }) {
+      axios.get('/home.json')
+        .then(response => {
+          commit('SET_TIPOS_PRODUCTOS', response.data.tiposproductos);
         })
         .catch(error => {
           console.error(error);

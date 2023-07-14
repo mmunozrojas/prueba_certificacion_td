@@ -7,7 +7,8 @@ import RopaHombre from '../views/RopaHombre.vue'
 import RopaMujer from '../views/RopaMujer.vue'
 import ElectronicaView from '../views/ElectronicaView.vue'
 import CarritoView from '../views/CarritoView.vue'
-import Error404View from '../views/Error404View.vue';
+import Error404View from '../views/Error404View.vue'
+import ConfirmacionView from '../views/ConfirmacionView.vue'
 
 
 Vue.use(Router)
@@ -19,24 +20,29 @@ const routes = [
       component: HomeView
     },
     {
-      path: '/ropa-hombre',
+      path: '/electronics',
+      name: 'Electronica',
+      component: ElectronicaView
+    },
+    {
+      path: '/mens-clothing',
       name: 'RopaHombre',
       component: RopaHombre
     },
     {
-      path: '/ropa-mujer',
+      path: '/womens-clothing',
       name: 'RopaMujer',
       component: RopaMujer
-    },
-    {
-      path: '/electronica',
-      name: 'Electronica',
-      component: ElectronicaView
     },
     {
       path: '/carrito',
       name: 'Carrito',
       component: CarritoView 
+    },
+    {
+      path: '/confirmacion-pago',
+      name: 'Confirmacion',
+      component: ConfirmacionView
     },
     {
       path: '*',

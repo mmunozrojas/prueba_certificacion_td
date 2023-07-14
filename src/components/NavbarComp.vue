@@ -1,21 +1,21 @@
 <template>
   <v-app-bar app>
-    <v-toolbar-title>Vinos Edutecno</v-toolbar-title>
+    <v-toolbar-title>Tienda “DeTodito”</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="d-flex align-center">
       <v-btn text to="/">
         <v-icon v-if="isMobile">mdi-home</v-icon>
         <span v-else>Home</span>
       </v-btn>
-      <v-btn text to="/ropa-hombre">
+      <v-btn text to="/mens-clothing">
         <v-icon v-if="isMobile">mdi-bottle-wine</v-icon>
         <span v-else>Ropa Hombre</span>
       </v-btn>
-      <v-btn text to="/ropa-mujer">
+      <v-btn text to="/womens-clothing">
         <v-icon v-if="isMobile">mdi-glass-wine</v-icon>
         <span v-else>Ropa Mujer</span>
       </v-btn>
-      <v-btn text to="/electronica">
+      <v-btn text to="/electronics">
         <v-icon v-if="isMobile">mdi-sale</v-icon>
         <span v-else>Electrónica</span>
       </v-btn>
