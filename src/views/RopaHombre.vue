@@ -10,7 +10,6 @@
             <v-card class="ropahombre__card">
               <v-img :src="producto.image" class="ropahombre__img" contain></v-img>
               <v-card-title class="ropahombre__title justify-center">
-                <v-icon left>mdi-cart</v-icon>
                 {{ producto.title }}
               </v-card-title>
               <v-card-subtitle class="ropahombre__subtitle">

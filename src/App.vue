@@ -18,8 +18,8 @@ import FooterComp from './components/FooterComp.vue'
 export default {
   name: "App",
   components: {
-    'navbar-comp':NavbarComp,
-    'footer-comp':FooterComp,
+    'navbar-comp': NavbarComp,
+    'footer-comp': FooterComp,
   }
 }
 </script>

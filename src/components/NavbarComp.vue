@@ -23,7 +23,7 @@
         <v-switch v-if="!isMobile" v-model="darkMode" label="Modo oscuro" class="mr-3 custom-switch"></v-switch>
         <v-switch v-else v-model="darkMode" class="mr-3 custom-switch"></v-switch>
       </div>
-      <v-badge :content="cartCount" class="ma-3" :value="cartCount>0">
+      <v-badge :content="cartCount" class="ma-3" :value="cartCount > 0">
         <v-icon @click="goToCart">mdi-cart</v-icon>
       </v-badge>
     </v-toolbar-items>
@@ -55,10 +55,10 @@ export default {
     },
   },
   watch: {
-      darkMode(value) {
-        this.$vuetify.theme.dark = value;
-      },
+    darkMode(value) {
+      this.$vuetify.theme.dark = value;
     },
+  },
   mounted() {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();

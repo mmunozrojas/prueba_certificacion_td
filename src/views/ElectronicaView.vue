@@ -2,7 +2,7 @@
 
 <template>
   <v-container>
-    <ElectronicaComp/>
+    <ElectronicaComp />
   </v-container>
 </template>
 

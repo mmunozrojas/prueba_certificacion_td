@@ -14,7 +14,8 @@
                 <div class="ropamujer__description">{{ producto.description }}</div>
               </v-card-subtitle>
               <v-card-text class="ropamujer__text">
-                <div class="ropamujer__characteristic" v-for="caracteristica in producto.caracteristicas" :key="caracteristica">{{ caracteristica }}</div>
+                <div class="ropamujer__characteristic" v-for="caracteristica in producto.caracteristicas"
+                  :key="caracteristica">{{ caracteristica }}</div>
               </v-card-text>
               <v-card-actions class="ropamujer__actions">
                 <div class="ropamujer__prices">
@@ -133,6 +134,6 @@ export default {
 }
 
 .v-snack__wrapper {
-        max-width: none;
-    }
+  max-width: none;
+}
 </style>

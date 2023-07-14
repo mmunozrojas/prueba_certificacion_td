@@ -2,7 +2,7 @@
   <div>
     <CarruselComp />
     <TiposProductoComp />
-    
+
   </div>
 </template>
 
